@@ -1,8 +1,16 @@
-# Google Calendar API with Express.js
+# [Part -1] Google Calendar API with Express.js
 
 > Start the server (3000) → Authenticate to create tokens.json with valid auth to securely connect to GCal API (3000/auth/google) → Request create event api endpoint with appropriate details to create the event via GCal API (/api/create-event)
 
 A lightweight Express.js API that exposes an endpoint for creating Google Calendar events.
+
+## Tutorial Resources
+
+Check out the complete step-by-step guide for this project:
+
+- Watch the [Video Tutorial Series on YouTube](https://www.youtube.com/watch?v=AB3i7E0hzEk&list=PL7qSPQlgOO9LA10Dn6sj3kEO9E6j8SpdS)
+- Read the detailed blog posts
+  1. [\[Part-1\] Text to Action: Building a Smart Calendar AI Assistant](https://medium.com/@vivekvells/build-a-google-calendar-api-with-express-js-7f9955caeb88)
 
 ## Features
 
@@ -14,17 +22,20 @@ A lightweight Express.js API that exposes an endpoint for creating Google Calend
 
 1. Clone this repository
 2. Install dependencies:
+
    ```
    npm install
    ```
+
 3. Set up OAuth2 credentials:
    - Go to the [Google Cloud Console](https://console.cloud.google.com/)
    - Create a new project or select an existing one
    - Enable the Google Calendar API
    - Create OAuth2 credentials (Web application type)
-   - Add http://localhost:3000/auth/google/callback as an authorized redirect URI
+   - Add <http://localhost:3000/auth/google/callback> as an authorized redirect URI
 
 4. Create a `.env` file with your OAuth2 credentials:
+
    ```
    GOOGLE_CLIENT_ID=your_client_id_here
    GOOGLE_CLIENT_SECRET=your_client_secret_here
@@ -35,6 +46,7 @@ A lightweight Express.js API that exposes an endpoint for creating Google Calend
 ## Usage
 
 1. Start the server:
+
    ```
    npm start
    ```
@@ -44,6 +56,7 @@ A lightweight Express.js API that exposes an endpoint for creating Google Calend
 > User visits /auth/google → User is redirected to Google → User authenticates → Google redirects to /auth/google/callback → Tokens are saved → User is redirected to homepage
 
 3. First, authenticate by visiting:
+
    ```
    http://localhost:3000/auth/google
    ```
@@ -53,9 +66,11 @@ A lightweight Express.js API that exposes an endpoint for creating Google Calend
 ## API Endpoint
 
 ### POST /api/create-event
+
 Create a new calendar event
 
 **Request**
+
 ```json
 {
   "summary": "Team Meeting",
@@ -66,6 +81,7 @@ Create a new calendar event
 ```
 
 **Response**
+
 ```json
 {
   "success": true,
@@ -77,6 +93,7 @@ Create a new calendar event
 ## Testing with cURL
 
 Create an event:
+
 ```bash
 curl -X POST http://localhost:3000/api/create-event \
   -H "Content-Type: application/json" \
@@ -90,7 +107,8 @@ curl -X POST http://localhost:3000/api/create-event \
 
 ## Web Interface
 
-A simple web interface is available at http://localhost:3000, which provides:
+A simple web interface is available at <http://localhost:3000>, which provides:
+
 - A button to authenticate with Google
 - A form to create calendar events
 - Clear feedback when events are created successfully
