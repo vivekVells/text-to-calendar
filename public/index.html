@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Calendar API</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .container {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+    h1 {
+      color: #333;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input[type="text"], input[type="datetime-local"] {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+    }
+    textarea {
+      width: 100%;
+      height: 80px;
+      padding: 8px;
+      margin-bottom: 10px;
+    }
+    button {
+      background-color: #4285f4;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .auth-btn {
+      background-color: #34a853;
+    }
+    #result {
+      margin-top: 20px;
+      background-color: #f8f9fa;
+      padding: 15px;
+      border-radius: 4px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Google Calendar API</h1>
+  
+  <div class="container">
+    <h2>Step 1: Authenticate with Google</h2>
+    <p>Before using the API, you need to authenticate with your Google account.</p>
+    <a href="/auth/google"><button class="auth-btn">Connect to Google Calendar</button></a>
+  </div>
+  
+  <div class="container">
+    <h2>Step 2: Create Calendar Event</h2>
+    <form id="event-form">
+      <label for="summary">Event Title</label>
+      <input type="text" id="summary" required placeholder="Team Meeting">
+      
+      <label for="description">Description</label>
+      <textarea id="description" placeholder="Weekly team status update"></textarea>
+      
+      <label for="startDateTime">Start Time</label>
+      <input type="datetime-local" id="startDateTime" required>
+      
+      <label for="endDateTime">End Time</label>
+      <input type="datetime-local" id="endDateTime" required>
+      
+      <button type="submit">Create Event</button>
+    </form>
+    
+    <div id="result"></div>
+  </div>
+
+  <script>
+    // Set default date/time values (1 hour from now, for 1 hour)
+    const now = new Date();
+    const oneHourLater = new Date(now);
+    oneHourLater.setHours(oneHourLater.getHours() + 1);
+    const twoHoursLater = new Date(now);
+    twoHoursLater.setHours(twoHoursLater.getHours() + 2);
+    
+    // Format for datetime-local input
+    function formatDateForInput(date) {
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}T${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+    }
+    
+    document.getElementById('startDateTime').value = formatDateForInput(oneHourLater);
+    document.getElementById('endDateTime').value = formatDateForInput(twoHoursLater);
+    
+    document.getElementById('event-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const summary = document.getElementById('summary').value;
+      const description = document.getElementById('description').value;
+      const startDateTime = new Date(document.getElementById('startDateTime').value).toISOString();
+      const endDateTime = new Date(document.getElementById('endDateTime').value).toISOString();
+      
+      try {
+        const response = await fetch('/api/create-event', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ 
+            summary, 
+            description, 
+            startDateTime, 
+            endDateTime 
+          }),
+        });
+        
+        const data = await response.json();
+        const resultDiv = document.getElementById('result');
+        
+        if (!response.ok) {
+          resultDiv.innerHTML = `
+            <h3>Error</h3>
+            <p>${data.error || 'Something went wrong'}</p>
+          `;
+        } else {
+          resultDiv.innerHTML = `
+            <h3>Event Created!</h3>
+            <p><strong>Title:</strong> ${summary}</p>
+            <p><strong>Start:</strong> ${new Date(startDateTime).toLocaleString()}</p>
+            <p><strong>End:</strong> ${new Date(endDateTime).toLocaleString()}</p>
+            <p><a href="${data.eventLink}" target="_blank">View in Google Calendar</a></p>
+          `;
+        }
+        
+        resultDiv.style.display = 'block';
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to create event. See console for details.');
+      }
+    });
+  </script>
+</body>
+</html>
