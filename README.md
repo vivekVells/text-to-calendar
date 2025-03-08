@@ -41,6 +41,8 @@ A lightweight Express.js API that exposes an endpoint for creating Google Calend
 
 2. The API will be available at `http://localhost:3000`
 
+> User visits /auth/google → User is redirected to Google → User authenticates → Google redirects to /auth/google/callback → Tokens are saved → User is redirected to homepage
+
 3. First, authenticate by visiting:
    ```
    http://localhost:3000/auth/google
@@ -81,8 +83,8 @@ curl -X POST http://localhost:3000/api/create-event \
   -d '{
     "summary": "Team Meeting",
     "description": "Weekly team status update",
-    "startDateTime": "2023-12-15T14:00:00-07:00",
-    "endDateTime": "2023-12-15T15:00:00-07:00"
+    "startDateTime": "2025-03-10T14:00:00-07:00",
+    "endDateTime": "2025-03-10T15:00:00-07:00"
   }'
 ```
 
