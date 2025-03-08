@@ -1,24 +1,30 @@
-# [Part -1] Google Calendar API with Express.js
+# Text to Calendar AI
 
-> Start the server (3000) → Authenticate to create tokens.json with valid auth to securely connect to GCal API (3000/auth/google) → Request create event api endpoint with appropriate details to create the event via GCal API (/api/create-event)
-
-A lightweight Express.js API that exposes an endpoint for creating Google Calendar events.
+Transform natural language into calendar events instantly with this AI-powered assistant that turns your words into scheduled actions.
 
 ## Tutorial Resources
 
 Check out the complete step-by-step guide for this project:
 
-- Watch the [Video Tutorial Series on YouTube](https://www.youtube.com/watch?v=AB3i7E0hzEk&list=PL7qSPQlgOO9LA10Dn6sj3kEO9E6j8SpdS)
+- Watch the [complete video series on YouTube](https://www.youtube.com/watch?v=AB3i7E0hzEk&list=PL7qSPQlgOO9LA10Dn6sj3kEO9E6j8SpdS)
 - Read the detailed blog posts
-  1. [\[Part-1\] Text to Action: Building a Smart Calendar AI Assistant](https://medium.com/@vivekvells/build-a-google-calendar-api-with-express-js-7f9955caeb88)
+  1. [Part-1: Building a Smart Calendar AI Assistant](https://medium.com/@vivekvells/build-a-google-calendar-api-with-express-js-7f9955caeb88)
 
-## Features
+## [Part -1] Google Calendar API with Express.js
+
+> Start the server (3000) → Authenticate to create tokens.json with valid auth to securely connect to GCal API (3000/auth/google) → Request create event api endpoint with appropriate details to create the event via GCal API (/api/create-event)
+
+A lightweight Express.js API that exposes an endpoint for creating Google Calendar events.
+
+> Watch the [video tutorial for Part 1](https://youtu.be/AB3i7E0hzEk?si=bdqaYkyRx8W9i4DP)
+
+### Features
 
 - Google OAuth2 authentication
 - Calendar event creation
 - Simple form-based frontend interface
 
-## Setup
+### Setup
 
 1. Clone this repository
 2. Install dependencies:
@@ -63,9 +69,9 @@ Check out the complete step-by-step guide for this project:
 
 4. After authentication, you can create calendar events by sending a POST request to `/api/create-event` with JSON data.
 
-## API Endpoint
+### API Endpoint
 
-### POST /api/create-event
+#### POST /api/create-event
 
 Create a new calendar event
 
@@ -90,7 +96,7 @@ Create a new calendar event
 }
 ```
 
-## Testing with cURL
+### Testing with cURL
 
 Create an event:
 
@@ -105,7 +111,7 @@ curl -X POST http://localhost:3000/api/create-event \
   }'
 ```
 
-## Web Interface
+### Web Interface
 
 A simple web interface is available at <http://localhost:3000>, which provides:
 
@@ -113,7 +119,7 @@ A simple web interface is available at <http://localhost:3000>, which provides:
 - A form to create calendar events
 - Clear feedback when events are created successfully
 
-## Security Notes
+### Security Notes
 
 - This demo uses a simple file-based token storage system
 - For production, implement more secure token storage
