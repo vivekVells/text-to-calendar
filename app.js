@@ -1,9 +1,7 @@
-// app.js - Google Calendar API with Express
 require('dotenv').config();
 const express = require('express');
 const { google } = require('googleapis');
 const fs = require('fs');
-const path = require('path');
 
 const app = express();
 app.use(express.json());
@@ -20,10 +18,12 @@ const oauth2Client = new google.auth.OAuth2(
 try {
   const tokens = JSON.parse(fs.readFileSync('tokens.json'));
   oauth2Client.setCredentials(tokens);
-} catch (e) { /* No tokens yet */ }
+} catch (e) { 
+  throw new Error("Required auth tokens aren't available");
+}
 
 // Auth routes
-app.get('/auth/google', (req, res) => {
+app.get('/auth/google', (_, res) => {
   const authUrl = oauth2Client.generateAuthUrl({
     access_type: 'offline',
     scope: ['https://www.googleapis.com/auth/calendar']

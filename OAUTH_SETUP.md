@@ -10,6 +10,8 @@ This document provides steps to configure Google OAuth for the text-to-calendar 
    - Create an OAuth client ID (Web application type)
    - Add `http://localhost:3000/auth/google/callback` as an authorized redirect URI
 
+   <img src="./screenshots/oauth_setup_client_creds.png" alt="OAuth Client Credentials Setup" width="600">
+
 2. **Configure Environment Variables**
    ```
    GOOGLE_CLIENT_ID=REDACTED
@@ -55,7 +57,9 @@ Error 403: access_denied
 **Solution:**
 1. Go to [Google Cloud Console](https://console.cloud.google.com/) > "APIs & Services" > "OAuth consent screen"
 2. Under "Test users" section, click "ADD USERS"
+   <img src="./screenshots/oauth_setup_adding_test_user_email_id.png" alt="Adding Test Users" width="500">
 3. Enter your email address and click "SAVE"
+   <img src="./screenshots/oauth_setup_adding_dev_user_email_id.png" alt="Adding Developer Email" width="500">
 4. Only test users can authenticate while app is in testing mode (max 100 users during testing)
 
 **Documentation:**

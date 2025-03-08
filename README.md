@@ -1,5 +1,7 @@
 # Google Calendar API with Express.js
 
+> Start the server (3000) → Authenticate to create tokens.json with valid auth to securely connect to GCal API (3000/auth/google) → Request create event api endpoint with appropriate details to create the event via GCal API (/api/create-event)
+
 A lightweight Express.js API that exposes an endpoint for creating Google Calendar events.
 
 ## Features
