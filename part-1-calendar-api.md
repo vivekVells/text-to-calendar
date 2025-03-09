@@ -122,4 +122,4 @@ A simple web interface is available at <http://localhost:3000>, which provides:
 
 ## Next Steps
 
-Continue to [Part 2: Language to Structure](part-2-language-to-structure.md) where we'll add natural language processing capabilities.
+Continue to [Part 2: Words to Calendar Events](part-2-words-to-calendar-events.md) where we'll add natural language processing capabilities.

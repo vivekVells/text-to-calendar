@@ -9,7 +9,7 @@ This project demonstrates how to build a complete system for converting natural 
 The series is broken down into modules:
 
 1. **Calendar API Foundation** - Create a robust REST API for Google Calendar
-2. **Language to Structure** - Convert natural language to structured JSON data
+2. **Words to Calendar Events** - Convert natural language to structured calendar events
 3. **Voice Command Integration** - Add speech recognition (coming soon)
 
 ## Tutorial Resources
@@ -19,15 +19,15 @@ Check out the complete step-by-step guides for this project:
 ### Video Tutorials
 - [Complete YouTube Playlist](https://www.youtube.com/watch?v=AB3i7E0hzEk&list=PL7qSPQlgOO9LA10Dn6sj3kEO9E6j8SpdS)
 - [Part 1: Calendar API](https://youtu.be/AB3i7E0hzEk?si=bdqaYkyRx8W9i4DP)
-- [Part 2: Language to Structure](https://youtu.be/link_to_part_2)
+- [Part 2: Words to Calendar Events](https://youtu.be/link_to_part_2)
 
 ### Written Guides
 - **Part 1: Calendar API Foundation**
   - [Project Documentation](part-1-calendar-api.md)
   - [Medium Blog Post](https://medium.com/@vivekvells/build-a-google-calendar-api-with-express-js-7f9955caeb88)
-- **Part 2: Language to Structure**
-  - [Project Documentation](part-2-language-to-structure.md)
-  - [Medium Blog Post](TBD)
+- **Part 2: Words to Calendar Events**
+  - [Project Documentation](part-2-words-to-calendar-events.md)
+  - [Medium Blog Post](https://medium.com/@vivekvells/part-2-text-to-action-words-to-calendar-events-building-a-smart-calendar-ai-assistant-3ca928705442)
 
 ## Quick Start
 
@@ -39,7 +39,7 @@ Check out the complete step-by-step guides for this project:
 
 See the individual module documentation for detailed setup instructions:
 - [Part 1 Setup](part-1-calendar-api.md#setup)
-- [Part 2 Setup](part-2-words-to-calendar-events#prerequisites)
+- [Part 2 Setup](part-2-words-to-calendar-events.md#prerequisites)
 
 ## Features
 
