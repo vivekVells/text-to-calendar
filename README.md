@@ -18,8 +18,8 @@ Check out the complete step-by-step guides for this project:
 
 ### Video Tutorials
 - [Complete YouTube Playlist](https://www.youtube.com/watch?v=AB3i7E0hzEk&list=PL7qSPQlgOO9LA10Dn6sj3kEO9E6j8SpdS)
-- [Part 1: Calendar API](https://youtu.be/AB3i7E0hzEk?si=bdqaYkyRx8W9i4DP)
-- [Part 2: Words to Calendar Events](https://youtu.be/link_to_part_2)
+- [Part 1: Calendar API](https://youtu.be/AB3i7E0hzEk)
+- [Part 2: Words to Calendar Events](https://youtu.be/QspgMZ0Ehvo)
 
 ### Written Guides
 - **Part 1: Calendar API Foundation**
