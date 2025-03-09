@@ -40,14 +40,14 @@ const buildPrompt = (text, timezone) => {
   const tzAbbr = new Date().toLocaleString('en-US', { timeZone: tzString, timeZoneName: 'short' }).split(' ').pop();
   
   return `
-You are a system that converts natural language text into JSON for calendar events.
+You are an expert calendar event extraction system designed to accurately convert natural language text into structured JSON. Your primary focus is to identify and precisely extract key event components: event type, participants, dates, times, durations, and locations. You excel at understanding context and preserving all relevant details from the original text. You maintain strict output formatting as valid JSON without any explanatory text.
 
 TODAY'S DATE IS: ${formattedDate}
 USER'S TIMEZONE IS: ${tzString} (${tzAbbr})
 
 Given a text description of an event, extract the event information and return ONLY a valid JSON object with these fields:
-- summary: The event title
-- description: A brief description of the event (use the title if no description is provided)
+- summary: The event title INCLUDING any participant names mentioned
+- description: A detailed description of the event including participants, purpose, and any other details from the original text
 - startDateTime: ISO 8601 formatted start time
 - endDateTime: ISO 8601 formatted end time
 
@@ -63,19 +63,24 @@ Rules:
 - For dates without a year, assume the current or next occurrence
 - For relative dates like "tomorrow" or "next Friday", calculate the actual calendar date
 - Include timezone information in the ISO timestamp (use offset format like "-05:00" for CST)
+- Always extract participant names and include them in both the summary and description
+- If someone is mentioned (like "with Sara"), include their name in the event summary
 
-YOUR RESPONSE MUST BE A VALID JSON OBJECT ONLY. NO OTHER TEXT, EXPLANATION, OR FORMATTING.
-NO MARKDOWN CODE BLOCKS. JUST THE RAW JSON OBJECT.
+YOUR RESPONSE MUST BE A VALID JSON OBJECT ONLY. NO OTHER TEXT, EXPLANATION, OR FORMATTING. NO MARKDOWN CODE BLOCKS. JUST THE RAW JSON OBJECT.
 
 Examples:
 
 Input: "Schedule a team meeting tomorrow at 2pm for 45 minutes"
-Output:
-{"summary":"Team Meeting","description":"Team Meeting","startDateTime":"${tomorrowFormatted}T14:00:00${getTimezoneOffset(tzString)}","endDateTime":"${tomorrowFormatted}T14:45:00${getTimezoneOffset(tzString)}"}
+Output: {"summary":"Team Meeting","description":"Team Meeting","startDateTime":"${tomorrowFormatted}T14:00:00${getTimezoneOffset(tzString)}","endDateTime":"${tomorrowFormatted}T14:45:00${getTimezoneOffset(tzString)}"}
+
+Input: "Schedule a team meeting with Sara tomorrow at 3pm for 2 hours"
+Output: {"summary":"Team Meeting with Sara","description":"Team Meeting with Sara","startDateTime":"${tomorrowFormatted}T15:00:00${getTimezoneOffset(tzString)}","endDateTime":"${tomorrowFormatted}T17:00:00${getTimezoneOffset(tzString)}"}
 
 Input: "Create a dentist appointment on April 15 from 10am to 11:30am"
-Output:
-{"summary":"Dentist Appointment","description":"Dentist Appointment","startDateTime":"2025-04-15T10:00:00${getTimezoneOffset(tzString)}","endDateTime":"2025-04-15T11:30:00${getTimezoneOffset(tzString)}"}
+Output: {"summary":"Dentist Appointment","description":"Dentist Appointment","startDateTime":"2025-04-15T10:00:00${getTimezoneOffset(tzString)}","endDateTime":"2025-04-15T11:30:00${getTimezoneOffset(tzString)}"}
+
+Input: "Set up a project kickoff with the marketing team next Monday at 10am"
+Output: {"summary":"Project Kickoff with Marketing Team","description":"Project Kickoff with the Marketing Team","startDateTime":"2025-03-17T10:00:00${getTimezoneOffset(tzString)}","endDateTime":"2025-03-17T11:00:00${getTimezoneOffset(tzString)}"}
 
 Now convert the following text to a calendar event JSON:
 "${text}"

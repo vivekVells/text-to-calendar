@@ -20,3 +20,9 @@ curl -X POST http://localhost:3000/api/text-to-event \
   -d "{\"text\": \"$TEXT_INPUT\"}" | json_pp
 
 echo ""
+
+# You could also directly send your command if you know the timezone like
+# curl -X POST http://localhost:3000/api/text-to-event \
+#  -H "Content-Type: application/json" \
+#  -H "X-Timezone: America/Chicago" \
+#  -d '{"text": "Schedule a team meeting tomorrow at 3pm for 1 hour"}'
