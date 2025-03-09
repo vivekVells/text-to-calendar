@@ -2,125 +2,68 @@
 
 Transform natural language into calendar events instantly with this AI-powered assistant that turns your words into scheduled actions.
 
+## Project Overview
+
+This project demonstrates how to build a complete system for converting natural language instructions into structured actions, using calendar events as our example. 
+
+The series is broken down into modules:
+
+1. **Calendar API Foundation** - Create a robust REST API for Google Calendar
+2. **Language to Structure** - Convert natural language to structured JSON data
+3. **Voice Command Integration** - Add speech recognition (coming soon)
+
 ## Tutorial Resources
 
-Check out the complete step-by-step guide for this project:
+Check out the complete step-by-step guides for this project:
 
-- Watch the [complete video series on YouTube](https://www.youtube.com/watch?v=AB3i7E0hzEk&list=PL7qSPQlgOO9LA10Dn6sj3kEO9E6j8SpdS)
-- Read the detailed blog posts
-  1. [Part-1: Building a Smart Calendar AI Assistant](https://medium.com/@vivekvells/build-a-google-calendar-api-with-express-js-7f9955caeb88)
+### Video Tutorials
+- [Complete YouTube Playlist](https://www.youtube.com/watch?v=AB3i7E0hzEk&list=PL7qSPQlgOO9LA10Dn6sj3kEO9E6j8SpdS)
+- [Part 1: Calendar API](https://youtu.be/AB3i7E0hzEk?si=bdqaYkyRx8W9i4DP)
+- [Part 2: Language to Structure](https://youtu.be/link_to_part_2)
 
-## [Part -1] Google Calendar API with Express.js
+### Written Guides
+- **Part 1: Calendar API Foundation**
+  - [Project Documentation](part-1-calendar-api.md)
+  - [Medium Blog Post](https://medium.com/@vivekvells/build-a-google-calendar-api-with-express-js-7f9955caeb88)
+- **Part 2: Language to Structure**
+  - [Project Documentation](part-2-language-to-structure.md)
+  - [Medium Blog Post](TBD)
 
-> Start the server (3000) → Authenticate to create tokens.json with valid auth to securely connect to GCal API (3000/auth/google) → Request create event api endpoint with appropriate details to create the event via GCal API (/api/create-event)
-
-A lightweight Express.js API that exposes an endpoint for creating Google Calendar events.
-
-> Watch the [video tutorial for Part 1](https://youtu.be/AB3i7E0hzEk?si=bdqaYkyRx8W9i4DP)
-
-### Features
-
-- Google OAuth2 authentication
-- Calendar event creation
-- Simple form-based frontend interface
-
-### Setup
+## Quick Start
 
 1. Clone this repository
-2. Install dependencies:
+2. Install dependencies: `npm install`
+3. Set up required environment variables in `.env`
+4. Start the server: `npm start`
+5. Visit http://localhost:3000
 
-   ```
-   npm install
-   ```
+See the individual module documentation for detailed setup instructions:
+- [Part 1 Setup](part-1-calendar-api.md#setup)
+- [Part 2 Setup](part-2-words-to-calendar-events#prerequisites)
 
-3. Set up OAuth2 credentials:
-   - Go to the [Google Cloud Console](https://console.cloud.google.com/)
-   - Create a new project or select an existing one
-   - Enable the Google Calendar API
-   - Create OAuth2 credentials (Web application type)
-   - Add <http://localhost:3000/auth/google/callback> as an authorized redirect URI
+## Features
 
-4. Create a `.env` file with your OAuth2 credentials:
+- **Google Calendar Integration** with OAuth2 authentication
+- **Natural Language Processing** to convert plain text to calendar events
+- **Timezone-aware** date/time handling
+- **Web Interface** for both structured and natural language input
+- **Command-line Testing** tools
 
-   ```
-   GOOGLE_CLIENT_ID=your_client_id_here
-   GOOGLE_CLIENT_SECRET=your_client_secret_here
-   GOOGLE_REDIRECT_URI=http://localhost:3000/auth/google/callback
-   PORT=3000
-   ```
+## API Endpoints
 
-## Usage
+| Endpoint | Description |
+|----------|-------------|
+| `POST /api/create-event` | Create event from structured JSON data |
+| `POST /api/text-to-event` | Create event from natural language text |
 
-1. Start the server:
+## Testing with cURL
 
-   ```
-   npm start
-   ```
-
-2. The API will be available at `http://localhost:3000`
-
-> User visits /auth/google → User is redirected to Google → User authenticates → Google redirects to /auth/google/callback → Tokens are saved → User is redirected to homepage
-
-3. First, authenticate by visiting:
-
-   ```
-   http://localhost:3000/auth/google
-   ```
-
-4. After authentication, you can create calendar events by sending a POST request to `/api/create-event` with JSON data.
-
-### API Endpoint
-
-#### POST /api/create-event
-
-Create a new calendar event
-
-**Request**
-
-```json
-{
-  "summary": "Team Meeting",
-  "description": "Weekly team status update",
-  "startDateTime": "2023-12-15T14:00:00-07:00",
-  "endDateTime": "2023-12-15T15:00:00-07:00"
-}
-```
-
-**Response**
-
-```json
-{
-  "success": true,
-  "eventId": "a1b2c3d4e5f6g7h8i9j0",
-  "eventLink": "https://calendar.google.com/calendar/event?eid=..."
-}
-```
-
-### Testing with cURL
-
-Create an event:
+> Use your timezone or run `test-text-to-event.sh`
 
 ```bash
-curl -X POST http://localhost:3000/api/create-event \
+# Create event with natural language
+curl -X POST http://localhost:3000/api/text-to-event \
   -H "Content-Type: application/json" \
-  -d '{
-    "summary": "Team Meeting",
-    "description": "Weekly team status update",
-    "startDateTime": "2025-03-10T14:00:00-07:00",
-    "endDateTime": "2025-03-10T15:00:00-07:00"
-  }'
+  -H "X-Timezone: America/New_York" \
+  -d '{"text": "Schedule a team meeting tomorrow at 3pm for 1 hour"}'
 ```
-
-### Web Interface
-
-A simple web interface is available at <http://localhost:3000>, which provides:
-
-- A button to authenticate with Google
-- A form to create calendar events
-- Clear feedback when events are created successfully
-
-### Security Notes
-
-- This demo uses a simple file-based token storage system
-- For production, implement more secure token storage
-- Use HTTPS for all API endpoints in production

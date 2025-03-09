@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const { google } = require('googleapis');
 const fs = require('fs');
+const { textToCalendarEvent } = require('./nlpService');
+const { createCalendarEvent } = require('./utils/calendarUtils');
 
 const app = express();
 app.use(express.json());
@@ -18,8 +20,8 @@ const oauth2Client = new google.auth.OAuth2(
 try {
   const tokens = JSON.parse(fs.readFileSync('tokens.json'));
   oauth2Client.setCredentials(tokens);
-} catch (e) { 
-  throw new Error("Required auth tokens aren't available");
+} catch (error) { 
+  console.warn("No auth tokens found - authentication will be required");
 }
 
 // Auth routes
@@ -38,7 +40,7 @@ app.get('/auth/google/callback', async (req, res) => {
   res.redirect('/');
 });
 
-// API endpoint to create calendar event
+// API endpoint to create calendar event from structured JSON
 app.post('/api/create-event', async (req, res) => {
   try {
     // Check if we have the required fields
@@ -51,26 +53,59 @@ app.post('/api/create-event', async (req, res) => {
     }
     
     // Create the calendar event
-    const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
-    const response = await calendar.events.insert({
-      calendarId: 'primary',
-      resource: {
-        summary,
-        description: description || summary,
-        start: { dateTime: startDateTime },
-        end: { dateTime: endDateTime }
-      }
+    const result = await createCalendarEvent({
+      auth: oauth2Client,
+      summary,
+      description,
+      startDateTime,
+      endDateTime
     });
     
-    res.status(201).json({
-      success: true,
-      eventId: response.data.id,
-      eventLink: response.data.htmlLink
-    });
+    res.status(201).json(result);
   } catch (error) {
     console.error('Error creating event:', error);
     res.status(error.code || 500).json({ 
       error: error.message || 'Failed to create event' 
+    });
+  }
+});
+
+// API endpoint to create calendar event from natural language text
+app.post('/api/text-to-event', async (req, res) => {
+  try {
+    const { text } = req.body;
+    
+    if (!text) {
+      return res.status(400).json({
+        error: 'Missing required field: text'
+      });
+    }
+
+    // Get user timezone from request headers or default to system timezone
+    const timezone = req.get('X-Timezone') || Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    // Convert the text to a structured event with timezone awareness
+    const eventData = await textToCalendarEvent(text, timezone);
+    const { summary, description = summary, startDateTime, endDateTime } = eventData;
+    
+    // Create the calendar event using the extracted data
+    const result = await createCalendarEvent({
+      auth: oauth2Client,
+      summary,
+      description,
+      startDateTime,
+      endDateTime
+    });
+    
+    // Add the parsed data for reference
+    res.status(201).json({
+      ...result,
+      eventData
+    });
+  } catch (error) {
+    console.error('Error creating event from text:', error);
+    res.status(error.code || 500).json({
+      error: error.message || 'Failed to create event from text'
     });
   }
 });

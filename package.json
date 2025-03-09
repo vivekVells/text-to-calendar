@@ -1,18 +1,19 @@
 {
   "name": "text-to-calendar",
   "version": "1.0.0",
-  "description": "A simple Express.js API that adds events to Google Calendar from text descriptions",
+  "description": "Convert natural language to Google Calendar events by using simple Express.js API endpoint + Ollama LLM",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js"
   },
   "dependencies": {
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
-    "googleapis": "^126.0.1"
+    "axios": "^1.6.7",
+    "dotenv": "^16.4.1",
+    "express": "^4.18.2",
+    "googleapis": "^130.0.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.3"
   }
 }

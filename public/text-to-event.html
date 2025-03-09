@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text to Calendar Event</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .container {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+    h1, h2 {
+      color: #333;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    textarea {
+      width: 100%;
+      height: 80px;
+      padding: 8px;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+    button {
+      background-color: #4285f4;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .auth-btn {
+      background-color: #34a853;
+    }
+    #result {
+      margin-top: 20px;
+      background-color: #f8f9fa;
+      padding: 15px;
+      border-radius: 4px;
+      display: none;
+    }
+    .example {
+      background-color: #f0f0f0;
+      padding: 8px 12px;
+      border-radius: 4px;
+      margin: 5px 0;
+      cursor: pointer;
+      display: inline-block;
+    }
+    .example:hover {
+      background-color: #e0e0e0;
+    }
+    .loading {
+      display: none;
+      margin-top: 15px;
+    }
+    .loading::after {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #4285f4;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      vertical-align: middle;
+      margin-left: 10px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .nav {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .nav a {
+      text-decoration: none;
+      color: #4285f4;
+      font-weight: bold;
+    }
+    .debug {
+      margin-top: 15px;
+      border-top: 1px solid #ccc;
+      padding-top: 15px;
+      font-family: monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="nav">
+    <a href="/">Standard Event Form</a>
+    <a href="/text-to-event.html">Natural Language Events</a>
+  </div>
+
+  <h1>Text to Calendar Event</h1>
+  <p>Simply describe your event in natural language, and we'll create it in your Google Calendar.</p>
+  
+  <div class="container">
+    <h2>Step 1: Authenticate with Google</h2>
+    <p>Before using the app, you need to authenticate with your Google account.</p>
+    <a href="/auth/google"><button class="auth-btn">Connect to Google Calendar</button></a>
+  </div>
+  
+  <div class="container">
+    <h2>Step 2: Describe Your Event</h2>
+    <p>Type a description of your event in natural language.</p>
+    
+    <div>
+      <div>Try these examples:</div>
+      <div class="example">Schedule a team meeting tomorrow at 2pm for 45 minutes</div>
+      <div class="example">Create a dentist appointment on April 15 from 10am to 11:30am</div>
+      <div class="example">Set up a lunch with Sarah next Friday at noon</div>
+    </div>
+    
+    <form id="event-form">
+      <label for="text-input">Event Description</label>
+      <textarea id="text-input" required placeholder="Schedule a team meeting tomorrow at 2pm for 45 minutes"></textarea>
+      
+      <button type="submit">Create Event</button>
+      <div class="loading" id="loading">Processing your request <span></span></div>
+    </form>
+    
+    <div id="result"></div>
+  </div>
+
+  <script>
+    // Example click handling
+    document.querySelectorAll('.example').forEach(example => {
+      example.addEventListener('click', () => {
+        document.getElementById('text-input').value = example.textContent;
+      });
+    });
+    
+    document.getElementById('event-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const textInput = document.getElementById('text-input').value;
+      const loadingElement = document.getElementById('loading');
+      const resultDiv = document.getElementById('result');
+      
+      if (!textInput.trim()) {
+        alert('Please enter an event description');
+        return;
+      }
+      
+      // Show loading indicator
+      loadingElement.style.display = 'block';
+      resultDiv.style.display = 'none';
+      
+      try {
+        // Get user's timezone
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        
+        const response = await fetch('/api/text-to-event', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Timezone': timezone
+          },
+          body: JSON.stringify({ text: textInput }),
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+          resultDiv.innerHTML = `
+            <h3>Error</h3>
+            <p>${data.error || 'Something went wrong'}</p>
+          `;
+        } else {
+          const startTime = new Date(data.eventData.startDateTime).toLocaleString();
+          const endTime = new Date(data.eventData.endDateTime).toLocaleString();
+          
+          resultDiv.innerHTML = `
+            <h3>Event Created!</h3>
+            <p><strong>Title:</strong> ${data.eventData.summary}</p>
+            <p><strong>Description:</strong> ${data.eventData.description || '(None)'}</p>
+            <p><strong>Start:</strong> ${startTime}</p>
+            <p><strong>End:</strong> ${endTime}</p>
+            <p><strong>Timezone:</strong> ${timezone}</p>
+            <p><a href="${data.eventLink}" target="_blank">View in Google Calendar</a></p>
+            <div class="debug">
+              <strong>Debug Info:</strong>
+              ${JSON.stringify(data, null, 2)}
+            </div>
+          `;
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        resultDiv.innerHTML = `
+          <h3>Error</h3>
+          <p>Failed to create event. See console for details.</p>
+        `;
+      } finally {
+        // Hide loading indicator and show result
+        loadingElement.style.display = 'none';
+        resultDiv.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>
